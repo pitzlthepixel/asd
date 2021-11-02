@@ -1,0 +1,34 @@
+-- Exploit Check
+if not getrenv then
+    game.Players.LocalPlayer:Kick("Unsupported exploit")
+    return
+end
+
+-- Variable
+local player = game.Players.LocalPlayer
+local damage = game.ReplicatedStorage.Remotes.Damage
+local pass = getrenv()._G.Pass
+
+-- UI Library
+local library = loadstring(game:HttpGetAsync("https://pastebin.com/raw/HYcfs6KC"))()
+local w = library:CreateWindow('bonk')
+w:Section('Discord: aPg7RQV')
+w:Box('Target', {
+   flag = "ws";
+   type = 'string';
+}, function(yes)
+    for i,v in pairs(game.Players:GetPlayers()) do
+        if v ~= player and v.Name:lower():find(yes:lower()) and pcall(function() return v.Character.Head,v.Character.HumanoidRootPart end) then
+            repeat
+                pcall(function()    
+                    player.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame
+                    player.Character.HumanoidRootPart.Velocity = Vector3.new()
+                end)
+                wait()
+                spawn(function()
+                    damage:InvokeServer(pass, v.Character, {HitTime = 1, Type = "Normal", HitEffect = "LightHitEffect", Position = v.Character.Head.Position, HurtAnimation = game.ReplicatedStorage.Animations.HurtAnimations.Hurt3, VictimCFrame = v.Character.Head.CFrame, Sound = game.ReplicatedStorage.Sounds.Punch, Damage = 10})
+                end)
+            until not pcall(function() return v.Character.Head,v.Character.HumanoidRootPart,v.Character.Humanoid end) or v.Character.Humanoid.Health <= 0
+        end
+    end
+end)
